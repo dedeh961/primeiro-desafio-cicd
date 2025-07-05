@@ -33,7 +33,7 @@ jobs:
       shell: bash
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: "desafionext/api-flask"
+        ECR_REPOSITORY: "public.ecr.aws/j8d2p8u7/desafionext/api-flask"
       run: |
         docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
 
