@@ -31,7 +31,7 @@ jobs:
     - name: Login to Amazon ECR Public
       env:
         AWS_REGION: ${{ env.AWS_REGION }}
-        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+        ECR_REGISTRY: "public.ecr.aws/j8d2p8u7/desafionext"
       run: |
         aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
@@ -45,8 +45,8 @@ jobs:
       id: build-publish
       shell: bash
       env:
-        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_REGISTRY: "public.ecr.aws/j8d2p8u7/desafionext"
+        ECR_REPOSITORY: "api-flask"
       run: |
         docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}" --tag "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
