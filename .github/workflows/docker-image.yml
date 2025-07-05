@@ -3,6 +3,11 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - 'Makefile'
+      - 'k6.js'
+      - 'kubernetes/**'
   pull_request:
     branches: [ "main" ]
 
@@ -24,8 +29,8 @@ jobs:
 
     - name: Login to Amazon ECR Public
       env:
-        AWS_REGION: us-east-1
-        ECR_REGISTRY: "public.ecr.aws/j8d2p8u7/desafionext"
+        AWS_REGION: ${{ env.AWS_REGION }}
+        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
       run: |
         aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
@@ -39,8 +44,8 @@ jobs:
       id: build-publish
       shell: bash
       env:
-        ECR_REGISTRY: "public.ecr.aws/j8d2p8u7/desafionext"
-        ECR_REPOSITORY: "api-flask"
+        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
       run: |
         docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}" --tag "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
@@ -56,6 +61,6 @@ jobs:
       uses: northflank/deploy-to-northflank@v1
       with:
         northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
-        project-id: "desafio-next"
-        service-id: "github-actions"
-        image-path: "public.ecr.aws/j8d2p8u7/desafionext/api-flask:latest"
+        project-id: ${{ env.NORTHFLANK_PROJECT_ID }}
+        service-id: ${{ env.NORTHFLANK_SERVICE_ID }}
+        image-path: "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
