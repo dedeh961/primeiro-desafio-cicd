@@ -42,17 +42,21 @@ jobs:
         ECR_REGISTRY: "public.ecr.aws/j8d2p8u7/desafionext"
         ECR_REPOSITORY: "api-flask"
       run: |
-        docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
+        docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}" --tag "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
         docker push "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
+
+        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
         
         echo "IMAGE ${GITHUB_SHA::7} is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
 
         echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
 
-    - name: Deploy to railway
-      uses: bervProject/railway-deploy@main
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      with:
-        service: "api-flask"
+    # - name: Deploy to Northflank
+    #   uses: northflank/deploy-to-northflank@v1
+    #   with:
+    #     northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
+    #     project-id: ${{ env.PROJECT_ID }}
+    #     service-id: ${{ env.SERVICE_ID }}
+    #     image-path: ${{ steps.meta.outputs.tags }}
+    #     credentials-id: ${{ env.CREDENTIALS_ID }}
