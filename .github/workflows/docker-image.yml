@@ -50,7 +50,7 @@ jobs:
 
         echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
 
-    - name: Deploy to Northflank
+    - name: Deploy to railway
       uses: bervProject/railway-deploy@main
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
