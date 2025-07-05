@@ -5,10 +5,11 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: flask.local
+    http:
       paths:
-      - path: /
-        pathType: Prefix
+      - pathType: Prefix
+        path: /
         backend:
           service:
             name: api-flask
