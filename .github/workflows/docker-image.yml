@@ -3,6 +3,12 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'Makefile'
+      - 'kubernetes/**'
+      - 'k6.js'
   pull_request:
     branches: [ "main" ]
 
