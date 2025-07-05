@@ -4,6 +4,7 @@ import os
 from Controllers.HealthController import blp as HealthBlueprint
 from dotenv import dotenv_values
 from flask import Flask
+from waitress import serve
 
 
 def create_app():
@@ -25,4 +26,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(host="0.0.0.0", port=80)
+    serve(app, host="0.0.0.0", port=80)
