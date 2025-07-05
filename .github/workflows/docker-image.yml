@@ -15,9 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
   
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag api-flask:${GITHUB_SHA::7}
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -37,10 +34,11 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
-        IMAGE_TAG: ${GITHUB_SHA::7}
       run: |
-        docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
+        docker build . --file Dockerfile --tag "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
 
-        echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
+        
+        echo "IMAGE ${GITHUB_SHA::7} is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
+
+        echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
